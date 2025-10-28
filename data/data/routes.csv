@@ -1,0 +1,12 @@
+source,destination,distance
+Delhi,Bhopal,700
+Bhopal,Nagpur,350
+Nagpur,Hyderabad,500
+Hyderabad,Chennai,630
+Nagpur,Mumbai,830
+Delhi,Jaipur,270
+Jaipur,Mumbai,910
+Bhopal,Indore,190
+Indore,Mumbai,585
+Hyderabad,Bangalore,570
+Chennai,Bangalore,350
