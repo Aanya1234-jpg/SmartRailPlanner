@@ -1,4 +1,5 @@
 import streamlit as st
+from datetime import date, timedelta
 from route_optimizer import find_shortest_route
 from fare_model import load_model, predict_fare
 import pandas as pd
@@ -18,7 +19,13 @@ with st.form("route_form"):
     destination = st.selectbox("Destination Station", stations, index=stations.index(stations[-1]) if len(stations)>1 else 0)
     train_type = st.selectbox("Train Type", [("Express",1), ("Superfast",2), ("Premium",3)], format_func=lambda x: x[0])
     class_type = st.selectbox("Class", [("Sleeper",1), ("AC",2)], format_func=lambda x: x[0])
+
+    today = date.today()
+    journey_date = st.date_input("Select Journey Date", min_value=today)
+    arrival_date = st.date_input("Select Expected Arrival Date", min_value=journey_date)
+
     submitted = st.form_submit_button("Find Route")
+
 
 if submitted:
     if source == destination:
@@ -33,3 +40,8 @@ if submitted:
             st.write("**Total Distance (km):**", distance)
             fare = predict_fare(model, distance, train_type[1], class_type[1])
             st.write("**Estimated Fare (₹):**", fare)
+            st.write("**Journey Date:**", journey_date.strftime("%d %B %Y"))
+            st.write("**Expected Arrival Date:**", arrival_date.strftime("%d %B %Y"))
+            
+            
+
