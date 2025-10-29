@@ -16,7 +16,7 @@ st.markdown(
     """
     <style>
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
+        background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/main/images/train3.jpeg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
