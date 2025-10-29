@@ -47,7 +47,7 @@ st.markdown('<div class="title">🚆 SmartRail Planner</div>', unsafe_allow_html
 st.markdown('<div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>', unsafe_allow_html=True)
 
 # ---------------------- LOAD DATA ----------------------
-model = joblib.load('model.pkl')
+model = joblib.load('model/fare_model.pkl')
 routes_df = pd.read_csv('data/routes.csv')
 train_data = pd.read_csv('data/train_schedule.csv')
 
@@ -142,3 +142,4 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
