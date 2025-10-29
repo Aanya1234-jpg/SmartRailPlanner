@@ -19,7 +19,7 @@ st.markdown("""
 }
 [data-testid="stAppViewContainer"]::before {
     content: "";
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -45,7 +45,7 @@ main > div {
 
 /* Title — top-left fixed positioning */
 .title-container {
-    position: sticky;   /* stays fixed even when scrolling */
+    position: fixed;   /* stays fixed even when scrolling */
     top: 25px;
     left: 40px;
     z-index: 999;      /* ensures it appears above everything */
@@ -133,13 +133,12 @@ if find_btn:
                     st.markdown("### 🚄 Direct Route Found")
                     st.markdown("""
                        <div style="
-                           background-color: rgba(255, 255, 255, 0.95);
+                           background-color: rgba(255, 255, 255, 0.8);
                            border-radius: 10px;
                            padding: 15px;
                            margin-top: 10px;
                            margin-bottom: 15px;
                            border: 1px solid rgba(200,200,200,0.5);
-                           color: #333333;
                        ">
                     """, unsafe_allow_html=True)
 
@@ -191,8 +190,3 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
-
-
-
-
-
