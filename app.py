@@ -143,15 +143,13 @@ if find_btn:
                 if not direct_trains.empty:
                     st.markdown("### 🚄 Direct Route Found")
                     st.markdown("""
-                    <div style="
-                    background-color: rgba(255, 255, 255, 0.8);
-                    border-radius: 10px;
-                    padding: 15px;
-                    margin-top: 10px;
-                    margin-top: 10px;
-                    """, unsafe_allow_html=True)
-
-                    
+                       <div style="
+                           background-color: rgba(255, 255, 255, 0.8);
+                           border-radius: 10px;
+                           padding: 15px;
+                           margin-top: 10px;
+                           margin-top: 10px;
+                           """, unsafe_allow_html=True)
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
                         fare = predict_fare(model, distance, train['train_type'], train['class_type'])
@@ -199,6 +197,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
