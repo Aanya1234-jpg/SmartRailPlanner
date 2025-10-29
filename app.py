@@ -33,7 +33,7 @@ st.markdown("""
     z-index: 1;
 }
 
-/* Remove default Streamlit padding */
+/* Remove default Streamlit padding so we can position freely */
 main > div {
     padding-top: 0rem !important;
 }
@@ -43,12 +43,12 @@ main > div {
     background: rgba(0,0,0,0);
 }
 
-/* Title — fixed positioning */
+/* Title — top-left fixed positioning */
 .title-container {
-    position: fixed;
+    position: fixed;   /* stays fixed even when scrolling */
     top: 25px;
     left: 40px;
-    z-index: 999;
+    z-index: 999;      /* ensures it appears above everything */
     text-align: left;
 }
 
@@ -70,6 +70,7 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -124,24 +125,21 @@ if find_btn:
             else:
                 st.markdown("## 🧭 Available Route Options")
 
-                # -------- DIRECT ROUTE --------
+                # Direct route
                 direct_route_name = f"{source}-{destination}"
                 direct_trains = train_data[train_data['route_name'].str.lower() == direct_route_name.lower()]
 
                 if not direct_trains.empty:
                     st.markdown("### 🚄 Direct Route Found")
-
-                    # Styled white box
                     st.markdown("""
-                        <div style="
-                            background-color: rgba(255, 255, 255, 0.85);
-                            border: 1px solid rgba(220, 220, 220, 0.6);
-                            border-radius: 12px;
-                            padding: 18px;
-                            margin-top: 10px;
-                            margin-bottom: 15px;
-                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-                        ">
+                       <div style="
+                           background-color: rgba(255, 255, 255, 0.8);
+                           border-radius: 10px;
+                           padding: 15px;
+                           margin-top: 10px;
+                           margin-bottom: 15px;
+                           border: 1px solid rgba(200,200,200,0.5);
+                       ">
                     """, unsafe_allow_html=True)
 
                     for _, train in direct_trains.iterrows():
@@ -150,20 +148,15 @@ if find_btn:
                         time_hours = distance / train['avg_speed']
                         days = int(time_hours // 24)
                         arrival_date = journey_date + timedelta(days=days)
-                        
-                        st.markdown(f"""
-                        **Train:** {train['train_name']}  
-                        **Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')}  
-                        **Class:** {'Sleeper' if train['class_type']==1 else 'AC'}  
-                        💰 **Fare:** ₹{round(fare,2)}  
-                        ⏱ **Duration:** {days}d {int(time_hours%24)}h  
-                        📅 **Arrival:** {arrival_date.strftime('%d %b %Y')}
-                        """, unsafe_allow_html=True)
+                        st.write(f"**Train:** {train['train_name']} | "
+                                 f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
+                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
+                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
 
                     st.markdown("</div>", unsafe_allow_html=True)
                     st.markdown("---")
 
-                # -------- INDIRECT ROUTES --------
+                # Indirect routes
                 route_rows = []
                 for path in all_paths:
                     if len(path) <= 2:
@@ -197,4 +190,3 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
-
