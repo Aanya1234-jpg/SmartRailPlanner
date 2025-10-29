@@ -1,192 +1,164 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import networkx as nx
-import joblib
 from datetime import datetime, timedelta
+import joblib
+from route_optimizer import find_best_routes
 
-# ---------------------- STYLING ----------------------
-st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="centered")
+# ============================
+# PAGE CONFIGURATION
+# ============================
+st.set_page_config(page_title="SmartRail Planner", layout="wide")
 
-st.markdown("""
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-/* Add dark overlay for readability */
-[data-testid="stAppViewContainer"]::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.55); /* dark layer */
-    z-index: -1;
-}
-
-[data-testid="stHeader"] {
-    background: rgba(0,0,0,0);
-}
-
-/* Title Styling */
-.title {
-    text-align: left;
-    color: #00C8FF;
-    font-size: 70px;
-    font-weight: 900;
-    text-shadow: 4px 4px 10px black;
-    margin-left: 50px;
-    margin-top: 25px;
-}
-
-/* Subtitle */
-.subtitle {
-    text-align: left;
-    color: #f0f0f0;
-    font-size: 22px;
-    margin-left: 50px;
-    margin-bottom: 40px;
-}
-
-/* Card-like sections for readability */
-.block-container {
-    background-color: rgba(255, 255, 255, 0.12);
-    padding: 20px;
-    border-radius: 15px;
-}
-
-/* Buttons */
-.stButton>button {
-    background-color: #00C8FF;
-    color: white;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 12px;
-    border: none;
-}
-.stButton>button:hover {
-    background-color: #0086c3;
-}
-
-/* Route Cards */
-.route-card {
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 18px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-# ---------------------- TITLE ----------------------
-st.markdown('<div class="title">🚆 SmartRail Planner</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>', unsafe_allow_html=True)
-
-# ---------------------- LOAD DATA ----------------------
-model = joblib.load('model/fare_model.pkl')
-routes_df = pd.read_csv('data/routes.csv')
-train_data = pd.read_csv('data/train_schedule.csv')
-
-# ---------------------- HELPER FUNCTIONS ----------------------
-def predict_fare(model, distance, train_type, class_type):
-    features = np.array([[distance, train_type, class_type]])
-    return model.predict(features)[0]
-
-def find_all_routes(source, destination):
-    G = nx.Graph()
-    for _, row in routes_df.iterrows():
-        G.add_edge(row['source'], row['destination'], weight=row['distance'])
-    return list(nx.all_simple_paths(G, source=source, target=destination, cutoff=5)), G
-
-# ---------------------- INPUT SECTION ----------------------
-with st.container():
-    st.markdown("### 📍 Plan Your Journey")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        source = st.selectbox("🏁 Source Station", routes_df['source'].unique())
-    with col2:
-        destination = st.selectbox("🎯 Destination Station", routes_df['destination'].unique())
-    with col3:
-        journey_date = st.date_input("📅 Boarding Date", datetime.today())
-
-st.markdown("")
-find_btn = st.button("Find Best Routes 🚄")
-
-# ---------------------- MAIN LOGIC ----------------------
-if find_btn:
-    if source == destination:
-        st.warning("Source and destination cannot be the same.")
-    else:
-        try:
-            all_paths, G = find_all_routes(source, destination)
-            if not all_paths:
-                st.error("No route found between these stations.")
-            else:
-                st.markdown("## 🧭 Available Route Options")
-
-                # Direct route
-                direct_route_name = f"{source}-{destination}"
-                direct_trains = train_data[train_data['route_name'].str.lower() == direct_route_name.lower()]
-
-                if not direct_trains.empty:
-                    st.markdown('<div class="route-card">', unsafe_allow_html=True)
-                    st.markdown("### 🚄 Direct Route Found")
-                    for _, train in direct_trains.iterrows():
-                        distance = nx.shortest_path_length(G, source, destination, weight='weight')
-                        fare = predict_fare(model, distance, train['train_type'], train['class_type'])
-                        time_hours = distance / train['avg_speed']
-                        days = int(time_hours // 24)
-                        arrival_date = journey_date + timedelta(days=days)
-                        st.write(f"**Train:** {train['train_name']} | "
-                                 f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
-                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
-                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    st.markdown("---")
-
-                # Indirect routes
-                route_rows = []
-                for path in all_paths:
-                    if len(path) <= 2:
-                        continue
-                    total_distance = sum(G[path[i]][path[i+1]]['weight'] for i in range(len(path)-1))
-                    avg_speed = 80
-                    hours = total_distance / avg_speed
-                    days = int(hours // 24)
-                    arrival_date = journey_date + timedelta(days=days)
-                    total_fare = predict_fare(model, total_distance, 2, 2)
-                    route_rows.append({
-                        "Route Option": " → ".join(path),
-                        "Total Distance (km)": total_distance,
-                        "Approx Fare (₹)": round(total_fare, 2),
-                        "Estimated Time": f"{days}d {int(hours % 24)}h",
-                        "Arrival Date": arrival_date.strftime("%d %b %Y")
-                    })
-
-                if route_rows:
-                    st.markdown("### 🚉 Indirect Routes")
-                    route_df = pd.DataFrame(route_rows)
-                    st.dataframe(route_df, use_container_width=True)
-                else:
-                    st.info("No indirect routes available.")
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-# ---------------------- FOOTER ----------------------
-st.markdown("---")
+# ============================
+# BACKGROUND STYLING
+# ============================
 st.markdown(
-    "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
+    """
+    <style>
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    [data-testid="stHeader"] {
+        background: rgba(0,0,0,0);
+    }
+
+    .main-title {
+        text-align: center;
+        color: #00BFFF;
+        font-size: 60px;
+        font-weight: 800;
+        text-shadow: 2px 2px 10px #001f3f;
+    }
+
+    .sub-title {
+        text-align: center;
+        color: #E0FFFF;
+        font-size: 22px;
+        margin-bottom: 30px;
+    }
+
+    .section {
+        background: rgba(255,255,255,0.85);
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+    }
+
+    footer {
+        visibility: hidden;
+    }
+    </style>
+    """,
     unsafe_allow_html=True
 )
 
+# ============================
+# HEADER
+# ============================
+st.markdown("<h1 class='main-title'>🚆 SmartRail Planner</h1>", unsafe_allow_html=True)
+st.markdown("<h4 class='sub-title'>AI-Based Route Suggestion and Fare Estimation System</h4>", unsafe_allow_html=True)
 
+# ============================
+# DATA LOADING
+# ============================
+@st.cache_data
+def load_data():
+    try:
+        df_routes = pd.read_csv("data/train_schedule.csv")
+        model = joblib.load("model/fare_model.pkl")
+        return df_routes, model
+    except Exception as e:
+        st.error(f"Error loading data or model: {e}")
+        return None, None
 
+df_routes, model = load_data()
 
+if df_routes is not None:
+    stations = sorted(df_routes["source"].unique())
 
+    # ============================
+    # INPUT SECTION
+    # ============================
+    st.markdown("<div class='section'>", unsafe_allow_html=True)
+    st.subheader("🧭 Plan Your Journey")
 
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        source = st.selectbox("🚉 Source", stations)
+    with col2:
+        destination = st.selectbox("🎯 Destination", stations)
+    with col3:
+        date = st.date_input("📅 Boarding Date", min_value=datetime.today())
 
+    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ============================
+    # FIND ROUTES BUTTON
+    # ============================
+    if st.button("Find Best Routes 🚄"):
+        st.markdown("<h3 style='color:#00BFFF;'>Available Route Options</h3>", unsafe_allow_html=True)
+        
+        best_routes = find_best_routes(df_routes, source, destination)
+        if best_routes:
+            direct_routes = [r for r in best_routes if len(r["stops"]) == 0]
+            indirect_routes = [r for r in best_routes if len(r["stops"]) > 0]
+
+            # -----------------
+            # Direct Route Display
+            # -----------------
+            if direct_routes:
+                st.success("✅ Direct Route Found")
+                for r in direct_routes:
+                    arrival_date = (date + timedelta(hours=r["time_hours"])).strftime("%d %b %Y")
+                    st.markdown(
+                        f"""
+                        **Train:** {r['train_name']}  
+                        **Type:** {r['type']} | **Class:** {r['class']}  
+                        💰 **Fare:** ₹{r['fare']:.2f}  
+                        🕒 **Duration:** {r['time_hours']}h  
+                        📅 **Arrival:** {arrival_date}
+                        """)
+            else:
+                st.warning("No direct route found.")
+
+            # -----------------
+            # Indirect Routes
+            # -----------------
+            if indirect_routes:
+                st.markdown("<h4 style='color:#00BFFF;'>🚉 Indirect Route Options</h4>", unsafe_allow_html=True)
+                indirect_data = []
+                for r in indirect_routes:
+                    arrival_date = (date + timedelta(hours=r["time_hours"])).strftime("%d %b %Y")
+                    indirect_data.append({
+                        "Route Option": " → ".join(r["path"]),
+                        "Total Distance (km)": r["distance"],
+                        "Approx Fare (₹)": round(r["fare"], 2),
+                        "Estimated Time": f"{r['time_hours']}h",
+                        "Arrival": arrival_date
+                    })
+                df_display = pd.DataFrame(indirect_data)
+                st.dataframe(df_display, use_container_width=True)
+            else:
+                st.info("No indirect routes found.")
+        else:
+            st.error("No route options found between these stations.")
+else:
+    st.error("Dataset or model could not be loaded. Check your GitHub folder paths.")
+
+# ============================
+# FOOTER
+# ============================
+st.markdown(
+    """
+    <hr style="border:1px solid #00BFFF;">
+    <p style="text-align:center; color:#dfe6e9;">
+    © 2025 SmartRail Planner | Powered by AI & Streamlit
+    </p>
+    """,
+    unsafe_allow_html=True
+)
