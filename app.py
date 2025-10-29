@@ -45,7 +45,7 @@ main > div {
 
 /* Title — top-left fixed positioning */
 .title-container {
-    position: relative;   /* stays fixed even when scrolling */
+    position: sticky;   /* stays fixed even when scrolling */
     top: 25px;
     left: 40px;
     z-index: 999;      /* ensures it appears above everything */
@@ -191,6 +191,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
