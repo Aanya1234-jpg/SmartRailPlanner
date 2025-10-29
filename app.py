@@ -137,16 +137,7 @@ if find_btn:
 
                 if not direct_trains.empty:
                     st.markdown("### 🚄 Direct Route Found")
-                    st.markdown("""
-                       <div style="
-                           background-color: rgba(255, 255, 255, 0.8);
-                           border-radius: 10px;
-                           padding: 15px;
-                           margin-top: 10px;
-                           margin-bottom: 15px;
-                           border: 1px solid rgba(200,200,200,0.5);
-                       ">
-                    """, unsafe_allow_html=True)
+                    # Removed the outer div here, as each train will have its own div now
 
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
@@ -154,14 +145,31 @@ if find_btn:
                         time_hours = distance / train['avg_speed']
                         days = int(time_hours // 24)
                         arrival_date = journey_date + timedelta(days=days)
-                        st.write(f"**Train:** {train['train_name']} | "
-                                 f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
-                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
-                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
 
-                    st.markdown("</div>", unsafe_allow_html=True)
-                    st.markdown("---")
+                        # Start of the individual train detail box
+                        st.markdown(f"""
+                           <div style="
+                               background-color: rgba(255, 255, 255, 0.95); /* Adjusted for better visibility */
+                               border-radius: 10px;
+                               padding: 15px;
+                               margin-top: 10px;
+                               margin-bottom: 15px;
+                               border: 1px solid rgba(200,200,200,0.5);
+                               color: #333333; /* Darker text for readability */
+                           ">
+                               <p style="margin-bottom: 5px; font-weight: bold; color: #0056b3;">
+                                   <i class="fas fa-train"></i> Train: {train['train_name']} | Type: {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | Class: {'Sleeper' if train['class_type']==1 else 'AC'}
+                               </p>
+                               <p style="margin-top: 0; margin-bottom: 0;">
+                                   <i class="fas fa-dollar-sign"></i> Fare: ₹{round(fare,2)} |
+                                   <i class="fas fa-clock"></i> Duration: {days}d {int(time_hours%24)}h |
+                                   <i class="fas fa-calendar-alt"></i> Arrival: {arrival_date.strftime('%d %b %Y')}
+                               </p>
+                           </div>
+                        """, unsafe_allow_html=True)
+                        # End of the individual train detail box
 
+                    st.markdown("---") # Separator for the next section if any
                 # Indirect routes
                 route_rows = []
                 for path in all_paths:
@@ -196,6 +204,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
