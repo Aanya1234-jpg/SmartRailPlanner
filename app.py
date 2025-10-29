@@ -11,7 +11,7 @@ st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="cen
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background-image: url("https://i.ibb.co/dfSR6Sg/train-bg.jpg");
+    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -142,4 +142,5 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
