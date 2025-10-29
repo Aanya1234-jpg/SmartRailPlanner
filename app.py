@@ -13,6 +13,8 @@ st.markdown("""
 [data-testid="stAppViewContainer"] {
     background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
     background-size: cover;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
     background-position: center;
     background-attachment: fixed;
 }
@@ -54,6 +56,18 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
+st.markdown("""
+<style>
+.info-box {
+    border: 1px solid #d9d9d9;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    margin-top: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -84,6 +98,8 @@ def find_all_routes(source, destination):
 # ---------------------- INPUT SECTION ----------------------
 with st.container():
     st.markdown("<h3 style='color:#89CFF0; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+    st.markdown("<div class='info-box'>🚆 Enter your start and destination stations below to plan your journey efficiently.</div>", unsafe_allow_html=True)
+
 
 
     col1, col2, col3 = st.columns(3)
@@ -163,6 +179,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
