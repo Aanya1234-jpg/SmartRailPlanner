@@ -8,43 +8,71 @@ from datetime import datetime, timedelta
 # ---------------------- STYLING ----------------------
 st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="centered")
 
-st.markdown("""
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-[data-testid="stHeader"] {
-    background: rgba(0,0,0,0);
-}
-.title {
-    text-align: center;
-    color: #00C8FF;
-    font-size: 48px;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px #000000;
-}
-.subtitle {
-    text-align: center;
-    color: white;
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-.route-card {
-    background-color: rgba(255,255,255,0.8);
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-</style>
-""", unsafe_allow_html=True)
+# --- Custom CSS Styling ---
+st.markdown(
+    """
+    <style>
+    /* App background */
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/main/images/train_bg.jpeg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: brightness(90%);
+    }
 
-# ---------------------- TITLE ----------------------
-st.markdown('<div class="title">🚆 SmartRail Planner</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>', unsafe_allow_html=True)
+    /* Top-left title */
+    .main-title {
+        position: absolute;
+        top: 30px;
+        left: 40px;
+        font-size: 50px;
+        font-weight: 800;
+        font-family: 'Poppins', sans-serif;
+        color: #00BFFF;
+        text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    }
+
+    /* Subtitle below main title */
+    .sub-title {
+        position: absolute;
+        top: 90px;
+        left: 45px;
+        font-size: 20px;
+        color: #E0E0E0;
+        font-family: 'Open Sans', sans-serif;
+        font-style: italic;
+    }
+
+    /* Section titles (Plan, Available, Direct) */
+    h3, h2 {
+        color: #00BFFF !important;
+        text-shadow: 1px 1px 2px black;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Box for Direct Routes */
+    .route-box {
+        background: rgba(255,255,255,0.8);
+        padding: 20px;
+        border-radius: 15px;
+        margin-top: 15px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    }
+
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Titles on the screen ---
+st.markdown("<div class='main-title'>🚆 SmartRail Planner</div>", unsafe_allow_html=True)
+st.markdown("<div class='sub-title'>AI-Based Route Suggestion and Fare Estimation System</div>", unsafe_allow_html=True)
+
+# --- Section Titles ---
+st.markdown("<h3>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+
+# Your existing input fields below (source, destination, date)
 
 # ---------------------- LOAD DATA ----------------------
 model = joblib.load('model/fare_model.pkl')
@@ -142,5 +170,6 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
