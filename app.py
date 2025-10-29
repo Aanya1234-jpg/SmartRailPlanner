@@ -21,7 +21,7 @@ st.markdown("""
 }
 .title {
     text-align: top-left;
-    color: #00C8FF;
+    color: #fafafa;
     font-size: 48px;
     font-weight: bold;
     text-shadow: 2px 2px 4px #000000;
@@ -142,6 +142,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
