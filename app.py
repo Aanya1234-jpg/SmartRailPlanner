@@ -26,28 +26,42 @@ if submitted:
         if route is None:
             st.error("No route found between the selected stations.")
         else:
-            st.success("Available Train Options:")
-            st.write(f"**Route:** {' → '.join(route)}")
+            st.success(f"✅ Route Found: {' → '.join(route)}")
             st.write(f"**Total Distance:** {distance} km")
 
-            # Calculate estimated duration based on average speed (hours = distance/speed)
-            table_data = []
-            for _, train in train_data.iterrows():
-                travel_hours = distance / train['avg_speed']
-                travel_days = int(travel_hours // 24)
-                travel_time_str = f"{int(travel_hours//24)}d {int(travel_hours%24)}h"
+            # Load train schedule data
+            train_data = pd.read_csv('data/train_schedule.csv')
 
-                fare = predict_fare(model, distance, train['train_type'], train['class_type'])
-                table_data.append({
-                    "Train Name": train['train_name'],
-                    "Type": "Express" if train['train_type']==1 else ("Superfast" if train['train_type']==2 else "Rajdhani"),
-                    "Class": "Sleeper" if train['class_type']==1 else "AC",
-                    "Boarding Date": journey_date.strftime("%d %b %Y"),
-                    "Arrival Date": arrival_date.strftime("%d %b %Y"),
-                    "Duration": travel_time_str,
-                    "Estimated Fare (₹)": round(fare, 2)
-                })
+            # To collect all route tables
+            all_tables = []
 
-            result_df = pd.DataFrame(table_data)
-            st.dataframe(result_df)
+            # Go through each segment of the route (Delhi→Bhopal, Bhopal→Nagpur, etc.)
+            for i in range(len(route)-1):
+                segment = f"{route[i]}-{route[i+1]}"
+                st.markdown(f"### 🚉 Trains for Route: **{segment}**")
 
+                segment_trains = train_data[train_data['route_name'] == segment]
+
+                if segment_trains.empty:
+                    st.info("No direct trains available for this segment.")
+                    continue
+
+                table_data = []
+                for _, train in segment_trains.iterrows():
+                    travel_hours = (distance / len(route)) / train['avg_speed']
+                    travel_days = int(travel_hours // 24)
+                    travel_time_str = f"{int(travel_hours//24)}d {int(travel_hours%24)}h"
+
+                    fare = predict_fare(model, (distance / len(route)), train['train_type'], train['class_type'])
+                    table_data.append({
+                        "Train Name": train['train_name'],
+                        "Type": "Express" if train['train_type']==1 else ("Superfast" if train['train_type']==2 else "Rajdhani"),
+                        "Class": "Sleeper" if train['class_type']==1 else "AC",
+                        "Boarding Date": journey_date.strftime("%d %b %Y"),
+                        "Arrival Date": arrival_date.strftime("%d %b %Y"),
+                        "Duration": travel_time_str,
+                        "Estimated Fare (₹)": round(fare, 2)
+                    })
+                
+                result_df = pd.DataFrame(table_data)
+                st.dataframe(result_df, use_container_width=True)
