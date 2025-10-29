@@ -35,7 +35,7 @@ st.markdown("""
 
 /* Remove default Streamlit padding so we can position freely */
 main > div {
-    padding-top: 0rem !important;
+    padding-top: 0rem !important; /* Keep this to control overall top padding */
 }
 
 /* Make Streamlit header transparent */
@@ -43,13 +43,14 @@ main > div {
     background: rgba(0,0,0,0);
 }
 
-/* Title — top-left fixed positioning */
+/* Title — now uses margin/padding to position it, allowing it to scroll */
 .title-container {
-    position: fixed;   /* stays fixed even when scrolling */
-    top: 25px;
-    left: 40px;
-    z-index: 999;      /* ensures it appears above everything */
+    /* Removed position: relative, top, left, z-index */
+    margin-top: 25px; /* Use margin for spacing from the top */
+    margin-left: 40px; /* Use margin for spacing from the left */
     text-align: left;
+    /* You might want a background or padding here if it conflicts with content */
+    padding-bottom: 20px; /* Add some space below the subtitle */
 }
 
 .title {
@@ -69,6 +70,11 @@ main > div {
     font-weight: 400;
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
+}
+
+/* Add a bit of top padding to the content area itself if needed */
+.block-container {
+    padding-top: 20px; /* Adjust if your content is too close to the subtitle */
 }
 
 </style>
@@ -190,6 +196,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
