@@ -1,6 +1,11 @@
-train_name,train_type,class_type,avg_speed
-Express Line,1,1,60
-Express Plus,1,2,70
-Superfast One,2,1,80
-Superfast Elite,2,2,90
-Rajdhani Gold,3,2,100
+route_name,train_name,train_type,class_type,avg_speed
+Delhi-Bhopal,Express Line,1,1,60
+Delhi-Bhopal,Express Plus,1,2,70
+Bhopal-Nagpur,Superfast One,2,1,80
+Bhopal-Nagpur,Superfast Elite,2,2,90
+Nagpur-Hyderabad,Rajdhani Gold,3,2,100
+Hyderabad-Bangalore,Superfast One,2,1,80
+Hyderabad-Bangalore,Superfast Elite,2,2,90
+Delhi-Jaipur,Express Line,1,1,60
+Jaipur-Mumbai,Superfast One,2,1,80
+Chennai-Bangalore,Rajdhani Gold,3,2,100
