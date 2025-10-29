@@ -70,16 +70,13 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
-.route-content {
-    background-color: rgba(255, 255, 255, 0.85);  /* translucent white */
-    border: 1px solid rgba(180, 180, 180, 0.6);   /* light grey border */
-    border-radius: 15px;
-    padding: 18px;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    backdrop-filter: blur(8px);
-
+.route-box {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 1px solid #d3d3d3;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
 
 }
 
@@ -145,7 +142,15 @@ if find_btn:
 
                 if not direct_trains.empty:
                     st.markdown("### 🚄 Direct Route Found")
-                    st.markdown('<div class="route-content">', unsafe_allow_html=True)
+                    st.markdown("""
+                    <div style="
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 10px;
+                    padding: 15px;
+                    margin-top: 10px;
+                    margin-top: 10px;
+                    """, unsafe_allow_html=True)
+
                     
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
@@ -194,6 +199,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
