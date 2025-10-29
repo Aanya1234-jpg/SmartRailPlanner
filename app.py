@@ -11,36 +11,77 @@ st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="cen
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train_bg.jpeg");
+    background-image: url("https://i.ibb.co/dfSR6Sg/train-bg.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
+
+/* Add dark overlay for readability */
+[data-testid="stAppViewContainer"]::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.55); /* dark layer */
+    z-index: -1;
+}
+
 [data-testid="stHeader"] {
     background: rgba(0,0,0,0);
 }
+
+/* Title Styling */
 .title {
-    text-align: center;
+    text-align: left;
     color: #00C8FF;
-    font-size: 48px;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px #000000;
+    font-size: 70px;
+    font-weight: 900;
+    text-shadow: 4px 4px 10px black;
+    margin-left: 50px;
+    margin-top: 25px;
 }
+
+/* Subtitle */
 .subtitle {
-    text-align: center;
-    color: white;
-    font-size: 20px;
-    margin-bottom: 30px;
+    text-align: left;
+    color: #f0f0f0;
+    font-size: 22px;
+    margin-left: 50px;
+    margin-bottom: 40px;
 }
+
+/* Card-like sections for readability */
+.block-container {
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+/* Buttons */
+.stButton>button {
+    background-color: #00C8FF;
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+}
+.stButton>button:hover {
+    background-color: #0086c3;
+}
+
+/* Route Cards */
 .route-card {
-    background-color: rgba(255,255,255,0.8);
-    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 18px;
     border-radius: 15px;
     margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
 }
 </style>
 """, unsafe_allow_html=True)
+
 
 # ---------------------- TITLE ----------------------
 st.markdown('<div class="title">🚆 SmartRail Planner</div>', unsafe_allow_html=True)
@@ -142,6 +183,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
