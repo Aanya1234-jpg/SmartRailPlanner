@@ -1,0 +1,6 @@
+train_name,train_type,class_type,avg_speed
+Express Line,1,1,60
+Express Plus,1,2,70
+Superfast One,2,1,80
+Superfast Elite,2,2,90
+Rajdhani Gold,3,2,100
