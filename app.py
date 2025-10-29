@@ -31,17 +31,14 @@ st.markdown("""
     z-index: 0;
 }
 
-/* Ensure block-container doesn't interfere with top positioning */
 .block-container {
     position: relative;
     z-index: 1;
-    /* Adjust top padding if needed, but title-container handles its own margin */
-    /* padding-top: 20px;  - Removed this from .block-container for now to let title be higher */
 }
 
 /* Remove default Streamlit padding so we can position freely */
 main > div {
-    padding-top: 0rem !important;
+    padding-top: 0rem !important; /* Keep this to control overall top padding */
 }
 
 /* Make Streamlit header transparent */
@@ -49,12 +46,12 @@ main > div {
     background: rgba(0,0,0,0);
 }
 
-/* Title — positioned with margins, allowing it to scroll */
+/* Title — now uses margin/padding to position it, allowing it to scroll */
 .title-container {
-    margin-top: 25px; /* Pushes it down from the very top */
-    margin-left: 40px; /* Pushes it right from the very left */
+    margin-top: 25px; /* Use margin for spacing from the top */
+    margin-left: 40px; /* Use margin for spacing from the left */
     text-align: left;
-    padding-bottom: 20px; /* Space below subtitle */
+    padding-bottom: 20px; /* Add some space below the subtitle */
 }
 
 .title {
@@ -76,6 +73,12 @@ main > div {
     margin-top: 4px;
 }
 
+/* Add a bit of top padding to the content area itself if needed */
+/* This will affect all .block-container elements, including your input fields */
+.block-container {
+    padding-top: 20px; /* Adjust if your content is too close to the subtitle */
+}
+
 /* Custom styling for Streamlit's selectbox and date_input labels */
 .stSelectbox label, .stDateInput label {
     color: white !important; /* Makes labels white */
@@ -84,43 +87,27 @@ main > div {
 }
 
 /* Style for the dataframe headers and cells to blend better or stand out */
+/* Target the dataframe container directly */
 .stDataFrame {
     background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent white for the table background */
     border-radius: 10px;
     padding: 10px;
-    margin-top: 20px; /* Add margin to separate from content above */
 }
-.stDataFrame .css-1dp5atx.e1tzin5v0 th { /* Target headers */
+/* Style for dataframe headers */
+.stDataFrame .css-1dp5atx.e1tzin5v0 th {
     background-color: #007bff; /* Blue header background */
     color: white; /* White header text */
     font-weight: bold;
     border-radius: 5px;
-    padding: 8px; /* Add padding to headers */
 }
-.stDataFrame .css-1dp5atx.e1tzin5v0 td { /* Target cells */
+/* Style for dataframe cells */
+.stDataFrame .css-1dp5atx.e1tzin5v0 td {
     color: #333333; /* Darker text for cells */
-    padding: 8px; /* Add padding to cells */
 }
-
-/* Additional styling for the "Plan Your Journey" container */
-[data-testid="stVerticalBlock"] > div:first-child > div:first-child { /* Targets the container around "Plan Your Journey" */
-    background-color: rgba(255, 255, 255, 0.9); /* A slightly less transparent white */
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 30px; /* Space from content above, will cause input section to scroll */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Style for the 'Plan Your Journey' header itself */
-h3 {
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.7) !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------- TITLE ----------------------
-# This is correctly structured to scroll with content when margins are used.
 st.markdown("""
 <div class="title-container">
   <div class="title">🚆 SmartRail Planner</div>
@@ -129,11 +116,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------- LOAD DATA ----------------------
+# Ensure your model and data paths are correct relative to where you run the script
 try:
     model = joblib.load('model/fare_model.pkl')
 except FileNotFoundError:
     st.error("Error: 'fare_model.pkl' not found in 'model/' directory. Please check the path.")
-    st.stop()
+    st.stop() # Stop execution if model is not found
 
 try:
     routes_df = pd.read_csv('data/routes.csv')
@@ -147,16 +135,27 @@ except FileNotFoundError:
     st.error("Error: 'train_schedule.csv' not found in 'data/' directory. Please check the path.")
     st.stop()
 
+
 # ---------------------- HELPER FUNCTIONS ----------------------
 def predict_fare(model, distance, train_type, class_type):
-    # Mapping logic for train_type and class_type
-    train_type_map = {1: 'Express', 2: 'Superfast', 3: 'Rajdhani'}
-    class_type_map = {1: 'Sleeper', 2: 'AC'}
+    # Map train_type and class_type strings to numerical values if your model expects them
+    # Assuming 'Express': 1, 'Superfast': 2, 'Rajdhani': 3
+    # Assuming 'Sleeper': 1, 'AC': 2
+    # Your predict_fare function in the original code seems to assume numerical inputs directly
+    # Adjust if your actual model expects string categories
+    if isinstance(train_type, str):
+        train_type_map = {'Express': 1, 'Superfast': 2, 'Rajdhani': 3}
+        train_type_val = train_type_map.get(train_type, 1) # Default to Express if not found
+    else:
+        train_type_val = train_type
 
-    # If your model was trained on numerical labels, convert them back for display
-    # This function is for prediction, so it should take numerical if model expects it
-    # Assuming the 'train_type' and 'class_type' passed to this function are already numerical (1, 2, 3)
-    features = np.array([[distance, train_type, class_type]])
+    if isinstance(class_type, str):
+        class_type_map = {'Sleeper': 1, 'AC': 2}
+        class_type_val = class_type_map.get(class_type, 1) # Default to Sleeper if not found
+    else:
+        class_type_val = class_type
+
+    features = np.array([[distance, train_type_val, class_type_val]])
     return model.predict(features)[0]
 
 def find_all_routes(source, destination):
@@ -164,15 +163,15 @@ def find_all_routes(source, destination):
     for _, row in routes_df.iterrows():
         G.add_edge(row['source'], row['destination'], weight=row['distance'])
     
+    # Check if source and destination exist in the graph
     if source not in G or destination not in G:
         return [], G # Return empty paths if either node is missing
 
     return list(nx.all_simple_paths(G, source=source, target=destination, cutoff=5)), G
 
 # ---------------------- INPUT SECTION ----------------------
-# This `st.container()` will now have the additional styling from the CSS above
 with st.container():
-    st.markdown("<h3 style='color:#00E0FF; text-shadow: 2px 2px 5px #0A0A0A; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#00E0FF; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -198,58 +197,73 @@ if find_btn:
                 st.markdown("## 🧭 Available Route Options")
 
                 # Direct route
+                direct_route_name = f"{source}-{destination}"
                 # Filter train_data for routes that match source-destination exactly
                 direct_trains = train_data[
                     ((train_data['source'] == source) & (train_data['destination'] == destination)) |
-                    ((train_data['destination'] == source) & (train_data['source'] == destination)) # Also check reverse route
-                ].copy() # Use .copy() to avoid SettingWithCopyWarning
+                    ((train_data['source'] == destination) & (train_data['destination'] == source)) # Also check reverse route
+                ]
 
 
                 if not direct_trains.empty:
                     st.markdown("### 🚄 Direct Route Found")
-                    # Use a Streamlit column layout for side-by-side display if multiple direct trains
-                    cols_direct_trains = st.columns(len(direct_trains))
+                    # Removed the outer div here, as each train will have its own div now
 
-                    for i, (_, train) in enumerate(direct_trains.iterrows()):
-                        with cols_direct_trains[i]: # Place each train detail in its own column
-                            calculated_distance = nx.shortest_path_length(G, source, destination, weight='weight')
+                    for _, train in direct_trains.iterrows():
+                        # Ensure distance calculation uses the correct source/destination order if route is reversed
+                        calculated_distance = nx.shortest_path_length(G, source, destination, weight='weight')
 
-                            # Assuming 'train_type' and 'class_type' columns in your CSV are already numerical
-                            # If they are strings, you'll need to map them here before passing to predict_fare
-                            train_type_numeric = train['train_type'] # Assuming 'train_type' column in CSV is 1, 2, or 3
-                            class_type_numeric = train['class_type'] # Assuming 'class_type' column in CSV is 1 or 2
+                        # Pass numerical values to predict_fare based on your model's training
+                        # Assuming train_type: Express=1, Superfast=2, Rajdhani=3 (your current code suggests this)
+                        # Assuming class_type: Sleeper=1, AC=2 (your current code suggests this)
+                        train_type_numeric = 1 # Default to Express
+                        if 'Express' in train['train_name']: # Simple heuristic, adjust as needed
+                             train_type_numeric = 1
+                        elif 'Superfast' in train['train_name']:
+                             train_type_numeric = 2
+                        elif 'Rajdhani' in train['train_name']:
+                             train_type_numeric = 3
+                        # Use train['train_type'] directly if it's already numeric in your CSV
 
-                            fare = predict_fare(model, calculated_distance, train_type_numeric, class_type_numeric)
-                            time_hours = calculated_distance / train['avg_speed']
-                            days = int(time_hours // 24)
-                            arrival_date = journey_date + timedelta(days=days)
+                        class_type_numeric = 1 # Default to Sleeper
+                        if 'AC' in train['train_name'] or 'AC' in train['class_type']: # Check both columns for 'AC'
+                            class_type_numeric = 2
+                        # Use train['class_type'] directly if it's already numeric in your CSV
 
-                            # Start of the individual train detail box
-                            st.markdown(f"""
-                               <div style="
-                                   background-color: rgba(255, 255, 255, 0.95); /* Adjusted for better visibility */
-                                   border-radius: 10px;
-                                   padding: 15px;
-                                   margin-top: 10px; /* Adjust spacing between rows of direct trains */
-                                   margin-bottom: 15px;
-                                   border: 1px solid rgba(200,200,200,0.5);
-                                   color: #333333; /* Darker text for readability */
-                                   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-                               ">
-                                   <p style="margin-bottom: 5px; font-weight: bold; color: #0056b3; font-size: 1.1em;">
-                                       <i class="fas fa-train"></i> Train: {train['train_name']} | Type: {'Express' if train_type_numeric==1 else ('Superfast' if train_type_numeric==2 else 'Rajdhani')} | Class: {'Sleeper' if class_type_numeric==1 else 'AC'}
-                                   </p>
-                                   <p style="margin-top: 0; margin-bottom: 0; font-size: 1em;">
-                                       <i class="fas fa-dollar-sign"></i> Fare: ₹{round(fare,2)} |
-                                       <i class="fas fa-clock"></i> Duration: {days}d {int(time_hours%24)}h |
-                                       <i class="fas fa-calendar-alt"></i> Arrival: {arrival_date.strftime('%d %b %Y')}
-                                   </p>
-                               </div>
-                            """, unsafe_allow_html=True)
+
+                        fare = predict_fare(model, calculated_distance, train_type_numeric, class_type_numeric)
+                        time_hours = calculated_distance / train['avg_speed']
+                        days = int(time_hours // 24)
+                        arrival_date = journey_date + timedelta(days=days)
+
+                        # Start of the individual train detail box
+                        st.markdown(f"""
+                           <div style="
+                               background-color: rgba(255, 255, 255, 0.95); /* Adjusted for better visibility */
+                               border-radius: 10px;
+                               padding: 15px;
+                               margin-top: 10px;
+                               margin-bottom: 15px;
+                               border: 1px solid rgba(200,200,200,0.5);
+                               color: #333333; /* Darker text for readability */
+                               box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+                           ">
+                               <p style="margin-bottom: 5px; font-weight: bold; color: #0056b3; font-size: 1.1em;">
+                                   <i class="fas fa-train"></i> Train: {train['train_name']} | Type: {'Express' if train_type_numeric==1 else ('Superfast' if train_type_numeric==2 else 'Rajdhani')} | Class: {'Sleeper' if class_type_numeric==1 else 'AC'}
+                               </p>
+                               <p style="margin-top: 0; margin-bottom: 0; font-size: 1em;">
+                                   <i class="fas fa-dollar-sign"></i> Fare: ₹{round(fare,2)} |
+                                   <i class="fas fa-clock"></i> Duration: {days}d {int(time_hours%24)}h |
+                                   <i class="fas fa-calendar-alt"></i> Arrival: {arrival_date.strftime('%d %b %Y')}
+                               </p>
+                           </div>
+                        """, unsafe_allow_html=True)
+                        # End of the individual train detail box
+
+                    st.markdown("---") # Separator for the next section if any
                 else:
                     st.info(f"No direct trains found for the route {source} to {destination}.")
 
-                st.markdown("---") # Separator after direct routes
 
                 # Indirect routes
                 route_rows = []
@@ -257,6 +271,7 @@ if find_btn:
                     if len(path) <= 2: # Skip direct paths, as they are handled above
                         continue
                     
+                    # Calculate total distance for indirect paths
                     total_distance = 0
                     try:
                         total_distance = sum(G[path[i]][path[i+1]]['weight'] for i in range(len(path)-1))
@@ -264,11 +279,14 @@ if find_btn:
                         st.warning(f"Could not find edge data for path segment: {e}. Skipping route {path}.")
                         continue
 
-                    avg_speed = 80
+
+                    avg_speed = 80 # You might want to make this dynamic or average from train_data
                     hours = total_distance / avg_speed
                     days = int(hours // 24)
                     arrival_date = journey_date + timedelta(days=days)
                     
+                    # For indirect routes, assuming a generic train_type (e.g., Express) and class (e.g., AC)
+                    # Adjust these default values if you have a way to determine them for indirect segments
                     indirect_train_type_numeric = 2 # Superfast for indirect example
                     indirect_class_type_numeric = 2 # AC for indirect example
                     total_fare = predict_fare(model, total_distance, indirect_train_type_numeric, indirect_class_type_numeric)
@@ -284,6 +302,7 @@ if find_btn:
                 if route_rows:
                     st.markdown("### 🚉 Indirect Routes")
                     route_df = pd.DataFrame(route_rows)
+                    # The st.dataframe styling is in the <style> block now
                     st.dataframe(route_df, use_container_width=True)
                 else:
                     st.info("No indirect routes available for this journey.")
