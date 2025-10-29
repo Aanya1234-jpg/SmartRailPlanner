@@ -149,10 +149,10 @@ if find_btn:
                         time_hours = distance / train['avg_speed']
                         days = int(time_hours // 24)
                         arrival_date = journey_date + timedelta(days=days)
-                        st.write(f"**Train:** {train['train_name']} | "
+                        st.markdown(f"<span style='color: #333333;'>**Train:** {train['train_name']} | "
                                  f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
-                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
-                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
+                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}</span>", unsafe_allow_html=True)
+                        st.markdown(f"<span style='color: #333333;'>💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}</span>", unsafe_allow_html=True)
 
                     st.markdown("</div>", unsafe_allow_html=True)
                     st.markdown("---")
@@ -191,5 +191,6 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
