@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
 import networkx as nx
@@ -10,15 +11,31 @@ st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="cen
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
+    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train4.jpg");
+    position: relative;
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
 }
+[data-testid="stAppViewContainer"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(1000, 1000, 1000, 0.4); /* adjust opacity */
+    z-index: 0;
+}
+
+.block-container {
+    position: relative;
+    z-index: 1;
+}
 
 /* Remove default Streamlit padding so we can position freely */
 main > div {
-    padding-top: 0rem !important;
+    padding-top: 0rem !important; /* Keep this to control overall top padding */
 }
 
 /* Make Streamlit header transparent */
@@ -26,13 +43,14 @@ main > div {
     background: rgba(0,0,0,0);
 }
 
-/* Title — top-left fixed positioning */
+/* Title — now uses margin/padding to position it, allowing it to scroll */
 .title-container {
-    position: fixed;   /* stays fixed even when scrolling */
-    top: 25px;
-    left: 40px;
-    z-index: 999;      /* ensures it appears above everything */
+    /* Removed position: relative, top, left, z-index */
+    margin-top: 25px; /* Use margin for spacing from the top */
+    margin-left: 40px; /* Use margin for spacing from the left */
     text-align: left;
+    /* You might want a background or padding here if it conflicts with content */
+    padding-bottom: 20px; /* Add some space below the subtitle */
 }
 
 .title {
@@ -53,13 +71,19 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
+
+/* Add a bit of top padding to the content area itself if needed */
+.block-container {
+    padding-top: 20px; /* Adjust if your content is too close to the subtitle */
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------- TITLE ----------------------
 st.markdown("""
 <div class="title-container">
-  <div class="title">🚆 SmartRail Planner</div>
+  <div class="title"> SmartRail Planner</div>
   <div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>
 </div>
 """, unsafe_allow_html=True)
@@ -82,7 +106,8 @@ def find_all_routes(source, destination):
 
 # ---------------------- INPUT SECTION ----------------------
 with st.container():
-    st.markdown("### 📍 Plan Your Journey")
+    st.markdown("<h3 style='color:#00E0FF; text-shadow: 2px 2px 5px #0A0A0A; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+
     col1, col2, col3 = st.columns(3)
     with col1:
         source = st.selectbox("🏁 Source Station", routes_df['source'].unique())
@@ -111,21 +136,40 @@ if find_btn:
                 direct_trains = train_data[train_data['route_name'].str.lower() == direct_route_name.lower()]
 
                 if not direct_trains.empty:
-                    st.markdown('<div class="route-card">', unsafe_allow_html=True)
                     st.markdown("### 🚄 Direct Route Found")
+                    # Removed the outer div here, as each train will have its own div now
+
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
                         fare = predict_fare(model, distance, train['train_type'], train['class_type'])
                         time_hours = distance / train['avg_speed']
                         days = int(time_hours // 24)
                         arrival_date = journey_date + timedelta(days=days)
-                        st.write(f"**Train:** {train['train_name']} | "
-                                 f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
-                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
-                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    st.markdown("---")
 
+                        # Start of the individual train detail box
+                        st.markdown(f"""
+                           <div style="
+                               background-color: rgba(255, 255, 255, 0.95); /* Adjusted for better visibility */
+                               border-radius: 10px;
+                               padding: 15px;
+                               margin-top: 10px;
+                               margin-bottom: 15px;
+                               border: 1px solid rgba(200,200,200,0.5);
+                               color: #333333; /* Darker text for readability */
+                           ">
+                               <p style="margin-bottom: 5px; font-weight: bold; color: #0056b3;">
+                                   <i class="fas fa-train"></i> Train: {train['train_name']} | Type: {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | Class: {'Sleeper' if train['class_type']==1 else 'AC'}
+                               </p>
+                               <p style="margin-top: 0; margin-bottom: 0;">
+                                   <i class="fas fa-dollar-sign"></i> Fare: ₹{round(fare,2)} |
+                                   <i class="fas fa-clock"></i> Duration: {days}d {int(time_hours%24)}h |
+                                   <i class="fas fa-calendar-alt"></i> Arrival: {arrival_date.strftime('%d %b %Y')}
+                               </p>
+                           </div>
+                        """, unsafe_allow_html=True)
+                        # End of the individual train detail box
+
+                    st.markdown("---") # Separator for the next section if any
                 # Indirect routes
                 route_rows = []
                 for path in all_paths:
@@ -160,6 +204,8 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
+
 
 
 
