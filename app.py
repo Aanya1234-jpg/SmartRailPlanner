@@ -14,7 +14,7 @@ st.markdown("""
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 [data-testid="stAppViewContainer"] {
-    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train4.jpg"); /* NEW BACKGROUND */
+    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
     position: relative;
     background-size: cover;
     background-position: center;
@@ -27,14 +27,16 @@ st.markdown("""
     left: 0;
     right: 0;
     bottom: 0;
-    /* Adjusted overlay for better contrast, slightly darker white */
-    background-color: rgba(255, 255, 255, 0.5); /* Was 1000,1000,1000,0.4 - changed to 255,255,255,0.5 */
+    background-color: rgba(255, 255, 255, 0.4); /* adjust opacity */
     z-index: 0;
 }
 
+/* Ensure block-container doesn't interfere with top positioning */
 .block-container {
     position: relative;
     z-index: 1;
+    /* Adjust top padding if needed, but title-container handles its own margin */
+    /* padding-top: 20px;  - Removed this from .block-container for now to let title be higher */
 }
 
 /* Remove default Streamlit padding so we can position freely */
@@ -49,15 +51,15 @@ main > div {
 
 /* Title — positioned with margins, allowing it to scroll */
 .title-container {
-    margin-top: 25px;
-    margin-left: 40px;
+    margin-top: 25px; /* Pushes it down from the very top */
+    margin-left: 40px; /* Pushes it right from the very left */
     text-align: left;
-    padding-bottom: 20px;
+    padding-bottom: 20px; /* Space below subtitle */
 }
 
 .title {
-    color: #4CAF50; /* Changed to a vibrant green */
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.8); /* Stronger shadow */
+    color: #FFD700;
+    text-shadow: 2px 2px 5px #000;
     font-family: 'Montserrat', sans-serif;
     font-size: 50px;
     font-weight: 700;
@@ -66,19 +68,19 @@ main > div {
 }
 
 .subtitle {
-    color: #F0F0F0; /* Slightly lighter white for contrast */
+    color: #E0E0E0;
     font-family: 'Raleway',Exo 2;
     font-size: 22px;
     font-weight: 400;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Stronger shadow */
+    text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
 
 /* Custom styling for Streamlit's selectbox and date_input labels */
 .stSelectbox label, .stDateInput label {
-    color: #333333 !important; /* Changed to dark grey for better readability against the light background of input box */
+    color: white !important; /* Makes labels white */
     font-weight: bold;
-    text-shadow: none; /* Remove shadow on these labels if background is light */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
 }
 
 /* Style for the dataframe headers and cells to blend better or stand out */
@@ -86,104 +88,39 @@ main > div {
     background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent white for the table background */
     border-radius: 10px;
     padding: 10px;
-    margin-top: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
+    margin-top: 20px; /* Add margin to separate from content above */
 }
 .stDataFrame .css-1dp5atx.e1tzin5v0 th { /* Target headers */
     background-color: #007bff; /* Blue header background */
     color: white; /* White header text */
     font-weight: bold;
     border-radius: 5px;
-    padding: 8px;
+    padding: 8px; /* Add padding to headers */
 }
 .stDataFrame .css-1dp5atx.e1tzin5v0 td { /* Target cells */
     color: #333333; /* Darker text for cells */
-    padding: 8px;
+    padding: 8px; /* Add padding to cells */
 }
 
 /* Additional styling for the "Plan Your Journey" container */
 [data-testid="stVerticalBlock"] > div:first-child > div:first-child { /* Targets the container around "Plan Your Journey" */
-    background-color: rgba(255, 255, 255, 0.95); /* More opaque for contrast */
-    border-radius: 15px; /* Slightly more rounded */
-    padding: 25px; /* Increased padding */
-    margin-top: 30px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Stronger shadow for depth */
+    background-color: rgba(255, 255, 255, 0.9); /* A slightly less transparent white */
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 30px; /* Space from content above, will cause input section to scroll */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for the 'Plan Your Journey' header itself */
-.stMarkdown h3 { /* More specific selector to target H3 */
-    color: #007bff !important; /* Changed to a strong blue */
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.4) !important; /* Softer shadow */
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600; /* Slightly bolder */
-}
-
-/* Styling for other general markdown headers to improve visibility */
-.stMarkdown h2 { /* For 'Available Route Options' */
-    color: #333333; /* Dark grey */
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.7); /* Light shadow if background is dark */
-    margin-top: 30px;
-    margin-bottom: 20px;
-    font-size: 1.8em;
-}
-
-.stMarkdown h3:not(.st-emotion-cache-1r6m9b6) { /* Target other H3s like 'Direct Route Found' */
-    color: #28a745; /* Green for section titles */
-    text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
-    margin-top: 25px;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
-
-/* Styling for the 'Find Best Routes' button */
-.stButton button {
-    background-color: #007bff; /* Blue button */
-    color: white;
-    font-weight: bold;
-    border-radius: 8px;
-    padding: 10px 20px;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.2s;
-}
-.stButton button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Styling for the individual train detail boxes */
-/* This is already inside your python code, but adding common styles here for consistency */
-/* The inline styles will override these if more specific */
-.train-detail-box {
-    background-color: rgba(255, 255, 255, 0.98); /* Almost opaque white */
-    border-radius: 12px;
-    padding: 18px;
-    margin-top: 12px;
-    margin-bottom: 18px;
-    border: 1px solid rgba(150,150,150,0.3);
-    color: #212529; /* Darker font for details */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
-}
-.train-detail-box p {
-    color: #212529; /* Ensure paragraph text is dark */
-}
-.train-detail-box p strong {
-    color: #0056b3; /* Keep strong elements blue */
-}
-.train-detail-box i { /* Icons within the box */
-    color: #28a745; /* Green icons for train details */
-    margin-right: 5px;
-}
-
-/* Footer styling */
-footer {
-    color: #E0E0E0 !important; /* Lighter white for visibility */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+h3 {
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.7) !important;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------- TITLE ----------------------
+# This is correctly structured to scroll with content when margins are used.
 st.markdown("""
 <div class="title-container">
   <div class="title">🚆 SmartRail Planner</div>
@@ -212,6 +149,13 @@ except FileNotFoundError:
 
 # ---------------------- HELPER FUNCTIONS ----------------------
 def predict_fare(model, distance, train_type, class_type):
+    # Mapping logic for train_type and class_type
+    train_type_map = {1: 'Express', 2: 'Superfast', 3: 'Rajdhani'}
+    class_type_map = {1: 'Sleeper', 2: 'AC'}
+
+    # If your model was trained on numerical labels, convert them back for display
+    # This function is for prediction, so it should take numerical if model expects it
+    # Assuming the 'train_type' and 'class_type' passed to this function are already numerical (1, 2, 3)
     features = np.array([[distance, train_type, class_type]])
     return model.predict(features)[0]
 
@@ -221,14 +165,14 @@ def find_all_routes(source, destination):
         G.add_edge(row['source'], row['destination'], weight=row['distance'])
     
     if source not in G or destination not in G:
-        return [], G
+        return [], G # Return empty paths if either node is missing
 
     return list(nx.all_simple_paths(G, source=source, target=destination, cutoff=5)), G
 
 # ---------------------- INPUT SECTION ----------------------
+# This `st.container()` will now have the additional styling from the CSS above
 with st.container():
-    # Adjusted the H3 style here to match the new global H3 style in CSS
-    st.markdown("<h3 style='font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#00E0FF; text-shadow: 2px 2px 5px #0A0A0A; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -251,35 +195,48 @@ if find_btn:
             if not all_paths:
                 st.error(f"No route found between {source} and {destination}. Please check station names.")
             else:
-                st.markdown("## 🧭 Available Route Options") # H2 style from CSS
+                st.markdown("## 🧭 Available Route Options")
 
                 # Direct route
+                # Filter train_data for routes that match source-destination exactly
                 direct_trains = train_data[
                     ((train_data['source'] == source) & (train_data['destination'] == destination)) |
-                    ((train_data['destination'] == source) & (train_data['source'] == destination))
-                ].copy()
+                    ((train_data['destination'] == source) & (train_data['source'] == destination)) # Also check reverse route
+                ].copy() # Use .copy() to avoid SettingWithCopyWarning
+
 
                 if not direct_trains.empty:
-                    st.markdown("<h3>🚄 Direct Route Found</h3>", unsafe_allow_html=True) # H3 style from CSS
+                    st.markdown("### 🚄 Direct Route Found")
+                    # Use a Streamlit column layout for side-by-side display if multiple direct trains
                     cols_direct_trains = st.columns(len(direct_trains))
 
                     for i, (_, train) in enumerate(direct_trains.iterrows()):
-                        with cols_direct_trains[i]:
+                        with cols_direct_trains[i]: # Place each train detail in its own column
                             calculated_distance = nx.shortest_path_length(G, source, destination, weight='weight')
-                            
-                            # Ensure train_type and class_type are numerical for prediction
-                            # You might need to adjust these mappings based on your actual model training
-                            train_type_numeric = train['train_type'] if isinstance(train['train_type'], int) else 1 # Default to 1 (Express)
-                            class_type_numeric = train['class_type'] if isinstance(train['class_type'], int) else 1 # Default to 1 (Sleeper)
+
+                            # Assuming 'train_type' and 'class_type' columns in your CSV are already numerical
+                            # If they are strings, you'll need to map them here before passing to predict_fare
+                            train_type_numeric = train['train_type'] # Assuming 'train_type' column in CSV is 1, 2, or 3
+                            class_type_numeric = train['class_type'] # Assuming 'class_type' column in CSV is 1 or 2
 
                             fare = predict_fare(model, calculated_distance, train_type_numeric, class_type_numeric)
                             time_hours = calculated_distance / train['avg_speed']
                             days = int(time_hours // 24)
                             arrival_date = journey_date + timedelta(days=days)
 
+                            # Start of the individual train detail box
                             st.markdown(f"""
-                               <div class="train-detail-box"> <!-- Using a class from CSS now -->
-                                   <p style="margin-bottom: 5px; font-weight: bold; font-size: 1.1em;">
+                               <div style="
+                                   background-color: rgba(255, 255, 255, 0.95); /* Adjusted for better visibility */
+                                   border-radius: 10px;
+                                   padding: 15px;
+                                   margin-top: 10px; /* Adjust spacing between rows of direct trains */
+                                   margin-bottom: 15px;
+                                   border: 1px solid rgba(200,200,200,0.5);
+                                   color: #333333; /* Darker text for readability */
+                                   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+                               ">
+                                   <p style="margin-bottom: 5px; font-weight: bold; color: #0056b3; font-size: 1.1em;">
                                        <i class="fas fa-train"></i> Train: {train['train_name']} | Type: {'Express' if train_type_numeric==1 else ('Superfast' if train_type_numeric==2 else 'Rajdhani')} | Class: {'Sleeper' if class_type_numeric==1 else 'AC'}
                                    </p>
                                    <p style="margin-top: 0; margin-bottom: 0; font-size: 1em;">
@@ -292,12 +249,12 @@ if find_btn:
                 else:
                     st.info(f"No direct trains found for the route {source} to {destination}.")
 
-                st.markdown("---")
+                st.markdown("---") # Separator after direct routes
 
                 # Indirect routes
                 route_rows = []
                 for path in all_paths:
-                    if len(path) <= 2:
+                    if len(path) <= 2: # Skip direct paths, as they are handled above
                         continue
                     
                     total_distance = 0
@@ -312,9 +269,8 @@ if find_btn:
                     days = int(hours // 24)
                     arrival_date = journey_date + timedelta(days=days)
                     
-                    # Assuming a generic train_type (e.g., Superfast=2) and class (e.g., AC=2) for indirect routes
-                    indirect_train_type_numeric = 2
-                    indirect_class_type_numeric = 2
+                    indirect_train_type_numeric = 2 # Superfast for indirect example
+                    indirect_class_type_numeric = 2 # AC for indirect example
                     total_fare = predict_fare(model, total_distance, indirect_train_type_numeric, indirect_class_type_numeric)
                     
                     route_rows.append({
@@ -326,7 +282,7 @@ if find_btn:
                     })
 
                 if route_rows:
-                    st.markdown("<h3>🚉 Indirect Routes</h3>", unsafe_allow_html=True) # H3 style from CSS
+                    st.markdown("### 🚉 Indirect Routes")
                     route_df = pd.DataFrame(route_rows)
                     st.dataframe(route_df, use_container_width=True)
                 else:
@@ -340,13 +296,3 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
-
-
-
-
-
-
-
-
-
-
