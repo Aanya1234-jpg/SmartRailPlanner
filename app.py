@@ -21,13 +21,16 @@ st.markdown("""
 }
 .title {
     text-align: top-left;
+    position: absolute;
+    top: 30px;
+    left: 40px; 
     color: #FFD700;
     text-shadow: 2px 2px 5px #000000;
     font-family: 'Poppins', sans-serif;
     font-size: 55px;
     font-weight: 700;
     letter-spacing: 1.5px;
-    margin-bottom: 10px;
+    margin: 0;
     
 }
 .subtitle {
@@ -146,6 +149,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
