@@ -11,7 +11,7 @@ st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="cen
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background-image: url("https://static.vecteezy.com/system/resources/previews/029/502/253/non_2x/white-canvas-blue-location-icon-embodies-gps-navigation-and-tracking-ai-generated-photo.jpg");
+    background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train4.jpg");
     position: relative;
     background-size: cover;
     background-position: center;
@@ -204,6 +204,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
