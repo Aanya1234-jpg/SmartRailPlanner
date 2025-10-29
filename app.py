@@ -54,16 +54,6 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
-.plan-title {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 28px;
-    color: #FFD700;
-    text-shadow: 1px 1px 3px #000;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -93,7 +83,8 @@ def find_all_routes(source, destination):
 
 # ---------------------- INPUT SECTION ----------------------
 with st.container():
-    st.markdown('<h3 class="plan-title">📍 Plan Your Journey</h3>', unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#89CFF0; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -172,6 +163,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
