@@ -20,7 +20,6 @@ st.markdown("""
     background: rgba(0,0,0,0);
 }
 .title {
-    text-align: top-left;
     position: absolute;
     top: 30px;
     left: 40px; 
@@ -34,13 +33,18 @@ st.markdown("""
     
 }
 .subtitle {
-    text-align: center;
-    color: white;
+    position: absolute;
+    top: 95px;
+    left: 42px;
+    color: #E0E0E0;
+    font-family: 'Raleway', sans-serif;
     font-size: 20px;
-    margin-bottom: 30px;
+    font-weight: 400;
+    text-shadow: 1px 1px 3px #000;
+    margin: 0;
 }
 .route-card {
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255,255,255,0.85);
     padding: 15px;
     border-radius: 15px;
     margin-bottom: 10px;
@@ -149,6 +153,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
