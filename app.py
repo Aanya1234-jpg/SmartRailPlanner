@@ -14,6 +14,7 @@ st.markdown("""
     background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
     background-size: cover;
     background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background-position: center;
     background-attachment: fixed;
 }
@@ -55,8 +56,6 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
-st.markdown("""
-<style>
 .info-box {
     border: 1px solid #d9d9d9;
     border-radius: 10px;
@@ -64,8 +63,6 @@ st.markdown("""
     background-color: #f9f9f9;
     margin-top: 10px;
 }
-</style>
-""", unsafe_allow_html=True)
 
 </style>
 """, unsafe_allow_html=True)
@@ -178,6 +175,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
