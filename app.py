@@ -83,7 +83,7 @@ main > div {
 # ---------------------- TITLE ----------------------
 st.markdown("""
 <div class="title-container">
-  <div class="title">🚆 SmartRail Planner</div>
+  <div class="title"> SmartRail Planner</div>
   <div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>
 </div>
 """, unsafe_allow_html=True)
@@ -106,7 +106,7 @@ def find_all_routes(source, destination):
 
 # ---------------------- INPUT SECTION ----------------------
 with st.container():
-    st.markdown("<h3 style='color:#5BC0EB; text-shadow: 2px 2px 5px #0A0A0A; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#007BFF; text-shadow: 2px 2px 5px #0A0A0A; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -204,6 +204,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
