@@ -1,164 +1,126 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime, timedelta
-import joblib
-from route_optimizer import find_best_routes
+from datetime import datetime
+from route_optimizer import find_routes
+from fare_model import estimate_fare
 
-# ============================
-# PAGE CONFIGURATION
-# ============================
+# ------------------ PAGE CONFIG ------------------
 st.set_page_config(page_title="SmartRail Planner", layout="wide")
 
-# ============================
-# BACKGROUND STYLING
-# ============================
+# ------------------ CUSTOM STYLING ------------------
 st.markdown(
     """
     <style>
+    /* Remove Streamlit default padding and menu */
+    #MainMenu, header, footer {visibility: hidden;}
+
+    /* Body background */
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/main/images/train3.jpeg");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background-color: #f4f6f9;
     }
 
-    [data-testid="stHeader"] {
-        background: rgba(0,0,0,0);
-    }
-
-    .main-title {
-        text-align: center;
-        color: #00BFFF;
-        font-size: 60px;
+    /* App title top-left */
+    .title-container {
+        position: absolute;
+        top: 20px;
+        left: 40px;
+        font-size: 48px;
         font-weight: 800;
-        text-shadow: 2px 2px 10px #001f3f;
+        color: #0078D7;
+        font-family: 'Trebuchet MS', sans-serif;
+        letter-spacing: 1px;
     }
 
-    .sub-title {
+    /* Subtitle centered */
+    .subtitle {
         text-align: center;
-        color: #E0FFFF;
         font-size: 22px;
-        margin-bottom: 30px;
+        color: #333333;
+        margin-top: 80px;
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    .section {
-        background: rgba(255,255,255,0.85);
-        padding: 25px;
+    /* Input box styling */
+    .input-box {
+        background-color: white;
         border-radius: 20px;
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+        padding: 30px;
+        width: 70%;
+        margin: 40px auto;
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
     }
 
-    footer {
-        visibility: hidden;
+    /* Buttons */
+    .stButton>button {
+        background-color: #0078D7;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        height: 45px;
+        width: 100%;
+    }
+
+    .stButton>button:hover {
+        background-color: #005fa3;
+        color: #ffffff;
+    }
+
+    /* Results */
+    .result-box {
+        background-color: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# ============================
-# HEADER
-# ============================
-st.markdown("<h1 class='main-title'>🚆 SmartRail Planner</h1>", unsafe_allow_html=True)
-st.markdown("<h4 class='sub-title'>AI-Based Route Suggestion and Fare Estimation System</h4>", unsafe_allow_html=True)
+# ------------------ HEADER ------------------
+st.markdown("<div class='title-container'>🚆 SmartRail Planner</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>AI-Based Route Suggestion and Fare Estimation System</div>", unsafe_allow_html=True)
 
-# ============================
-# DATA LOADING
-# ============================
-@st.cache_data
-def load_data():
-    try:
-        df_routes = pd.read_csv("data/train_schedule.csv")
-        model = joblib.load("model/fare_model.pkl")
-        return df_routes, model
-    except Exception as e:
-        st.error(f"Error loading data or model: {e}")
-        return None, None
+# ------------------ INPUT SECTION ------------------
+st.markdown("<div class='input-box'>", unsafe_allow_html=True)
 
-df_routes, model = load_data()
+col1, col2, col3 = st.columns(3)
+with col1:
+    source = st.selectbox("🚉 Source Station", ["Delhi", "Mumbai", "Bhopal", "Hyderabad", "Bangalore", "Kolkata"])
+with col2:
+    destination = st.selectbox("🎯 Destination Station", ["Delhi", "Mumbai", "Bhopal", "Hyderabad", "Bangalore", "Kolkata"])
+with col3:
+    date = st.date_input("📅 Boarding Date", datetime.today())
 
-if df_routes is not None:
-    stations = sorted(df_routes["source"].unique())
+st.write("")
+find_button = st.button("Find Best Routes 🚄")
+st.markdown("</div>", unsafe_allow_html=True)
 
-    # ============================
-    # INPUT SECTION
-    # ============================
-    st.markdown("<div class='section'>", unsafe_allow_html=True)
-    st.subheader("🧭 Plan Your Journey")
+# ------------------ ROUTE DISPLAY ------------------
+if find_button:
+    if source == destination:
+        st.warning("⚠️ Source and destination cannot be the same.")
+    else:
+        st.markdown("<h4 style='text-align:center; color:#0078D7;'>Available Route Options</h4>", unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        source = st.selectbox("🚉 Source", stations)
-    with col2:
-        destination = st.selectbox("🎯 Destination", stations)
-    with col3:
-        date = st.date_input("📅 Boarding Date", min_value=datetime.today())
-
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    # ============================
-    # FIND ROUTES BUTTON
-    # ============================
-    if st.button("Find Best Routes 🚄"):
-        st.markdown("<h3 style='color:#00BFFF;'>Available Route Options</h3>", unsafe_allow_html=True)
-        
-        best_routes = find_best_routes(df_routes, source, destination)
-        if best_routes:
-            direct_routes = [r for r in best_routes if len(r["stops"]) == 0]
-            indirect_routes = [r for r in best_routes if len(r["stops"]) > 0]
-
-            # -----------------
-            # Direct Route Display
-            # -----------------
-            if direct_routes:
-                st.success("✅ Direct Route Found")
-                for r in direct_routes:
-                    arrival_date = (date + timedelta(hours=r["time_hours"])).strftime("%d %b %Y")
+        try:
+            routes = find_routes(source, destination)
+            if not routes:
+                st.error("No routes found. Please try another combination.")
+            else:
+                for i, route in enumerate(routes, 1):
+                    fare = estimate_fare(route['distance'])
                     st.markdown(
                         f"""
-                        **Train:** {r['train_name']}  
-                        **Type:** {r['type']} | **Class:** {r['class']}  
-                        💰 **Fare:** ₹{r['fare']:.2f}  
-                        🕒 **Duration:** {r['time_hours']}h  
-                        📅 **Arrival:** {arrival_date}
-                        """)
-            else:
-                st.warning("No direct route found.")
-
-            # -----------------
-            # Indirect Routes
-            # -----------------
-            if indirect_routes:
-                st.markdown("<h4 style='color:#00BFFF;'>🚉 Indirect Route Options</h4>", unsafe_allow_html=True)
-                indirect_data = []
-                for r in indirect_routes:
-                    arrival_date = (date + timedelta(hours=r["time_hours"])).strftime("%d %b %Y")
-                    indirect_data.append({
-                        "Route Option": " → ".join(r["path"]),
-                        "Total Distance (km)": r["distance"],
-                        "Approx Fare (₹)": round(r["fare"], 2),
-                        "Estimated Time": f"{r['time_hours']}h",
-                        "Arrival": arrival_date
-                    })
-                df_display = pd.DataFrame(indirect_data)
-                st.dataframe(df_display, use_container_width=True)
-            else:
-                st.info("No indirect routes found.")
-        else:
-            st.error("No route options found between these stations.")
-else:
-    st.error("Dataset or model could not be loaded. Check your GitHub folder paths.")
-
-# ============================
-# FOOTER
-# ============================
-st.markdown(
-    """
-    <hr style="border:1px solid #00BFFF;">
-    <p style="text-align:center; color:#dfe6e9;">
-    © 2025 SmartRail Planner | Powered by AI & Streamlit
-    </p>
-    """,
-    unsafe_allow_html=True
-)
+                        <div class='result-box'>
+                        <b>Route Option {i}:</b> {route['path']} <br>
+                        🚄 <b>Distance:</b> {route['distance']} km |
+                        💰 <b>Estimated Fare:</b> ₹{fare:.2f} |
+                        ⏱️ <b>Duration:</b> {route['duration']} |
+                        📅 <b>Arrival:</b> {route['arrival_date']}
+                        </div><br>
+                        """,
+                        unsafe_allow_html=True
+                    )
+        except Exception as e:
+            st.error(f"Error occurred: {e}")
