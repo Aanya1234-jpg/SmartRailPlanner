@@ -70,6 +70,17 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
+.route-box {
+    background-color: rgba(255, 255, 255, 0.8);  /* translucent white box */
+    border: 1px solid rgba(200, 200, 200, 0.7); /* light grey border */
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    backdrop-filter: blur(6px);
+
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,7 +142,7 @@ if find_btn:
                 direct_trains = train_data[train_data['route_name'].str.lower() == direct_route_name.lower()]
 
                 if not direct_trains.empty:
-                    st.markdown('<div class="route-card">', unsafe_allow_html=True)
+                    st.markdown('<div class="route-box">', unsafe_allow_html=True)
                     st.markdown("### 🚄 Direct Route Found")
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
@@ -180,6 +191,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
