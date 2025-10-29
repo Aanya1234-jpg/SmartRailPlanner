@@ -16,46 +16,54 @@ st.markdown("""
     background-position: center;
     background-attachment: fixed;
 }
+
+/* Remove default Streamlit padding so we can position freely */
+main > div {
+    padding-top: 0rem !important;
+}
+
+/* Make Streamlit header transparent */
 [data-testid="stHeader"] {
     background: rgba(0,0,0,0);
 }
+
+/* Title — top-left fixed positioning */
+.title-container {
+    position: fixed;   /* stays fixed even when scrolling */
+    top: 25px;
+    left: 40px;
+    z-index: 999;      /* ensures it appears above everything */
+    text-align: left;
+}
+
 .title {
-    position: absolute;
-    top: 30px;
-    left: 40px; 
     color: #FFD700;
-    text-shadow: 2px 2px 5px #000000;
-    font-family: 'Poppins', sans-serif;
-    font-size: 55px;
+    text-shadow: 2px 2px 5px #000;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 50px;
     font-weight: 700;
     letter-spacing: 1.5px;
     margin: 0;
-    
 }
+
 .subtitle {
-    position: absolute;
-    top: 95px;
-    left: 42px;
     color: #E0E0E0;
     font-family: 'Raleway', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     text-shadow: 1px 1px 3px #000;
-    margin: 0;
-}
-.route-card {
-    background-color: rgba(255,255,255,0.85);
-    padding: 15px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    margin-top: 4px;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------- TITLE ----------------------
-st.markdown('<div class="title">🚆 SmartRail Planner</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>', unsafe_allow_html=True)
+st.markdown("""
+<div class="title-container">
+  <div class="title">🚆 SmartRail Planner</div>
+  <div class="subtitle">AI-Based Route Suggestion and Fare Estimation System</div>
+</div>
+""", unsafe_allow_html=True)
 
 # ---------------------- LOAD DATA ----------------------
 model = joblib.load('model/fare_model.pkl')
@@ -153,6 +161,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
