@@ -6,7 +6,7 @@ import joblib
 from datetime import datetime, timedelta
 
 # ---------------------- STYLING ----------------------
-st.set_page_config(page_title="SmartRail Planner", page_icon="🚆", layout="centered")
+st.set_page_config(page_title="SmartRail Planner", layout="centered")
 
 st.markdown("""
 <style>
@@ -204,6 +204,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
