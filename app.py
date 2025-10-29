@@ -48,8 +48,8 @@ main > div {
 
 .subtitle {
     color: #E0E0E0;
-    font-family: 'Raleway',Montserrat;
-    font-size: 30px;
+    font-family: 'Raleway',Exo 2;
+    font-size: 22px;
     font-weight: 400;
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
@@ -161,6 +161,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
