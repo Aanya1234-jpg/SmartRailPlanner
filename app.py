@@ -13,7 +13,6 @@ st.markdown("""
 [data-testid="stAppViewContainer"] {
     background-image: url("https://raw.githubusercontent.com/Aanya1234-jpg/SmartRailPlanner/refs/heads/main/images/train3.png");
     background-size: cover;
-    border: 1px solid rgba(255, 255, 255, 0.2);
     background-color: rgba(255, 255, 255, 0.1);
     background-position: center;
     background-attachment: fixed;
@@ -179,6 +178,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
