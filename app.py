@@ -70,15 +70,6 @@ main > div {
     text-shadow: 1px 1px 3px #000;
     margin-top: 4px;
 }
-.route-box {
-            background-color: rgba(255, 255, 255, 0.85);
-            border: 1px solid #d3d3d3;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 15px;
-            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-
-}
 
 </style>
 """, unsafe_allow_html=True)
@@ -197,6 +188,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
