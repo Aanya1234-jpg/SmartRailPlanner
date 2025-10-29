@@ -135,22 +135,33 @@ if find_btn:
                     st.markdown("### 🚄 Direct Route Found")
                     st.markdown("""
                        <div style="
-                           background-color: rgba(255, 255, 255, 0.8);
-                           border-radius: 10px;
-                           padding: 15px;
-                           margin-top: 10px;
-                           margin-top: 10px;
-                           """, unsafe_allow_html=True)
+                           background-color: rgba(255, 255, 255, 0.85);
+                           border: 1px solid rgba(200,200,200,0.4);
+                           border-radius: 12px;
+                           padding: 18px;
+                           margin-top: 12px;
+                           margin-bottom: 15px;
+                           box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+                         ">
+                     """, unsafe_allow_html=True)
                     for _, train in direct_trains.iterrows():
                         distance = nx.shortest_path_length(G, source, destination, weight='weight')
                         fare = predict_fare(model, distance, train['train_type'], train['class_type'])
                         time_hours = distance / train['avg_speed']
                         days = int(time_hours // 24)
                         arrival_date = journey_date + timedelta(days=days)
-                        st.write(f"**Train:** {train['train_name']} | "
-                                 f"**Type:** {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')} | "
-                                 f"**Class:** {'Sleeper' if train['class_type']==1 else 'AC'}")
-                        st.write(f"💰 Fare: ₹{round(fare,2)} | ⏱ Duration: {days}d {int(time_hours%24)}h | 📅 Arrival: {arrival_date.strftime('%d %b %Y')}")
+                        st.markdown(f"""
+                        <p style="font-size:16px; font-family:Poppins, sans-serif; color:#333;">
+                        <b>Train:</b> {train['train_name']}<br>
+                        <b>Type:</b> {'Express' if train['train_type']==1 else ('Superfast' if train['train_type']==2 else 'Rajdhani')}<br>
+                        <b>Class:</b> {'Sleeper' if train['class_type']==1 else 'AC'}<br>
+                        💰 <b>Fare:</b> ₹{round(fare,2)}<br>
+                        ⏱ <b>Duration:</b> {days}d {int(time_hours%24)}h<br>
+                        📅 <b>Arrival:</b> {arrival_date.strftime('%d %b %Y')}
+                        </p>
+                        """, unsafe_allow_html=True)
+
+                       
                     st.markdown('</div>', unsafe_allow_html=True)
                     st.markdown("---")
 
@@ -188,6 +199,7 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
 
