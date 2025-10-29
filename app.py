@@ -100,7 +100,7 @@ def find_all_routes(source, destination):
 
 # ---------------------- INPUT SECTION ----------------------
 with st.container():
-    st.markdown("<h3 style='color:#89CFF0; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#B0E0E6; font-family:Poppins, sans-serif;'>📍 Plan Your Journey</h3>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -190,5 +190,6 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
 
