@@ -55,7 +55,7 @@ main > div {
 }
 
 .title {
-    color: #FFD700;
+    color: #00BFFF;
     text-shadow: 2px 2px 5px #000;
     font-family: 'Montserrat', sans-serif;
     font-size: 50px;
@@ -315,4 +315,5 @@ st.markdown(
     "<div style='text-align:center; color:white;'>© 2025 SmartRail Planner | Designed by Aanya Sinha</div>",
     unsafe_allow_html=True
 )
+
 
